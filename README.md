@@ -4,8 +4,9 @@ Reading tracker and book recommendation Android application
 ## Concept notes
 
 ### Recommended Architecture (Initial, small scale)
+```
 Flutter App <=> Monolith Backend API Server <=> Database
-
+```
 No need for proxy yet since at this stage we're not creating microservices
 
 In the backend, there are logically separate features — physically in one service.
@@ -27,7 +28,7 @@ In the backend, there are logically separate features — physically in one serv
 3. Game Domain
 
 ### Modular monolith
-![Modular Monolith](concept-notes/modular-monolith.drawio.png)
+<img src="concept-notes/modular-monolith.drawio.png" width="400"/></td>
 
 ### Database design
 
@@ -67,16 +68,31 @@ started_at
 ended_at
 ```
 ### Rough notes
-![Concept Notes](concept-notes/biblo-concept-notes_1.jpg.jpeg)
-![Concept Notes](concept-notes/biblo-concept-notes_2.jpg.jpeg)
+<table>
+  <tr>
+    <td><img src="concept-notes/biblo-concept-notes_1.jpg.jpeg" width="600"/></td>
+    <td><img src="concept-notes/biblo-concept-notes_2.jpg.jpeg" width="600"/></td>
+  </tr>
+</table>
 
 ## Concept art
+<table>
+  <tr>
+    <td><img src="concept-art/biblo-concept-art_1.jpg.jpeg" width="600"/></td>
+    <td><img src="concept-art/biblo-concept-art_2.jpg.jpeg" width="600"/></td>
+  </tr>
+  <tr>
+    <td><img src="concept-art/biblo-concept-art_3.jpg.jpeg" width="600"/></td>
+    <td><img src="concept-art/biblo-concept-art_4.jpg.jpeg" width="600"/></td>
+  </tr>
+  <tr>
+    <td><img src="concept-art/biblo-concept-art_5.jpg.jpeg" width="600"/></td>
+    <td><img src="concept-art/biblo-concept-art_6.jpg.jpeg" width="600"/></td>
+  </tr>
+  <tr>
+    <td><img src="concept-art/biblo-concept-art_7.jpg.jpeg" width="600"/></td>
+    <td><img src="concept-art/biblo-concept-art_8.jpg.jpeg" width="600"/></td>
+  </tr>
+</table>
 
-![Concept Art](concept-art/biblo-concept-art_1.jpg.jpeg)
-![Concept Art](concept-art/biblo-concept-art_2.jpg.jpeg)
-![Concept Art](concept-art/biblo-concept-art_3.jpg.jpeg)
-![Concept Art](concept-art/biblo-concept-art_4.jpg.jpeg)
-![Concept Art](concept-art/biblo-concept-art_5.jpg.jpeg)
-![Concept Art](concept-art/biblo-concept-art_6.jpg.jpeg)
-![Concept Art](concept-art/biblo-concept-art_7.jpg.jpeg)
 
