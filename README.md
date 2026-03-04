@@ -28,7 +28,7 @@ In the backend, there are logically separate features — physically in one serv
 3. Game Domain
 
 ### Modular monolith
-<img src="concept-notes/modular-monolith.drawio.png" width="400"/></td>
+<img src="concept-notes/modular-monolith.png" width="600"/></td>
 
 ### Database design
 
