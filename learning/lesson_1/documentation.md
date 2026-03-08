@@ -285,3 +285,169 @@ class User(Base):
     username = Column(String)
     email = Column(String)
 ```
+## d. Create database file
+1. Review ```database.py```.
+2. Create the database connection engine. See the below example setup:
+```
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+
+DATABASE_URL = "postgresql://user:password@localhost/biblo"
+
+engine = create_engine(DATABASE_URL)
+
+SessionLocal = sessionmaker(
+    autocommit=False,
+    autoflush=False,
+    bind=engine
+)
+```
+3. We will be creating SQL tables, refer to the example below:
+```
+class User(Base):
+    __tablename__ = "users"
+
+    id = Column(UUID, primary_key=True)
+    username = Column(String)
+    email = Column(String)
+```
+4. What we achieved so far:
+```
+Flutter App => HTTP Request => FastAPI Endpoint => Validation (Pydantic) => Business Logic => Database Query => JSON Response
+```
+## e. Install [PostgreSQL](https://www.postgresql.org/download/windows/)
+1. Click: Download the installer (EDB Installer). This will redirect you to EnterpriseDB.
+2. Download the latest PostgreSQL version.
+3. Run the installer.
+4. What the ```database.py``` files does now:
+a. The database URL ```postgresql://postgres:password@localhost:5432/biblo``` tells you where the database lives.
+b. ```engine = create_engine(...)``` manages connections to PstgreSQL (it's like a bridge to the database).
+c. Each API request will create a database session to run queries:
+```
+SessionLocal = sessionmaker(...)
+```
+d. The base is used to define database models (tables):
+```
+Base = declarative_base()
+```
+e. Test database connection:
+(i) Create a temporary file: ```test_db.py```
+(ii) File contet:
+```
+from database import engine
+
+try:
+    connection = engine.connect()
+    print("Database connection successful!")
+    connection.close()
+except Exception as e:
+    print("Database connection failed:", e)
+```
+(iii) Run it: ```python test_db.py```
+(iv) Expected output: ```Database connection successful!```
+f. What we have achieved so far:
+```
+FastAPI server => SQLAlchemy => PostgreSQL connection => Biblo database
+```
+## f. Configure pgadmin 4
+1. Create a server, and configure the following settings:
+```
+Host name/address: localhost
+Port: 5432
+Maintenance database: postgres
+Username: postgres
+Password: your_password
+```
+2. The hostname is localhost because the PostgreSQL server is running on your own computer. ```localhost``` means "connect to the database server on this machine".
+3. Create the biblo Database
+4. Connect FastAPI → PostgreSQL
+a. Install dependency (one more library):
+```
+pip install python-dotenv
+```
+b. Update ```database.py``` as:
+```
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker, declarative_base
+
+DATABASE_URL = "postgresql://postgres:yourpassword@localhost:5432/biblo"
+
+engine = create_engine(DATABASE_URL)
+
+SessionLocal = sessionmaker(
+    autocommit=False,
+    autoflush=False,
+    bind=engine
+)
+
+Base = declarative_base()
+```
+5. Create Your First Table ```Users```:
+a. Create a new file ```models.py``` and add the following content in it:
+```
+from sqlalchemy import Column, Integer, String
+from database import Base
+
+
+class User(Base):
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, index=True)
+    email = Column(String, unique=True, index=True)
+```
+b. Create the Table in the Database:
+(i) Add the following to ```main.py```:
+```
+from database import engine
+from models import Base
+import models
+```
+(ii) After creating the FastAPI app, add this line:
+```
+Base.metadata.create_all(bind=engine)
+```
+(iii) Example:
+```
+from fastapi import FastAPI
+from database import engine
+import models
+from models import Base
+
+app = FastAPI()
+
+Base.metadata.create_all(bind=engine)
+
+
+@app.get("/")
+def root():
+    return {"message": "API is running"}
+```
+c. Run the Server:
+```
+uvicorn main:app --reload
+```
+d. Verify Table Was Created:
+Go to:
+```
+Databases
+  → biblo
+      → Schemas
+          → public
+              → Tables
+```
+Under ```Tables``` you should see ```users```.
+e. If you face issues, review your ```models.py``` file that should look like this:
+```
+from sqlalchemy import Column, Integer, String
+from database import Base
+
+
+class User(Base):
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, index=True)
+    email = Column(String, unique=True, index=True)
+```
+f. In case you don't see the server, refresh pgAdmin as it does not auto-refresh.
