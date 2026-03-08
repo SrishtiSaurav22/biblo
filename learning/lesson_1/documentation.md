@@ -199,3 +199,76 @@ user.email
 ```
 No manual parsing.
 
+# CRUD operations
+
+## Implementing CRUD (Without database)
+
+### a. Create book schema
+```
+from pydantic import BaseModel
+
+class Book(BaseModel):
+    id: int
+    title: str
+    author: str
+```
+
+### b. Fake database
+```
+books = []
+```
+
+### c. CREATE
+```
+@app.post("/books")
+def create_book(book: Book):
+    books.append(book)
+    return {"message": "Book added", "book": book}
+```
+
+### d. READ
+```
+@app.get("/books")
+def get_books():
+    return books
+```
+
+### e. UPDATE
+```
+@app.put("/books/{book_id}")
+def update_book(book_id: int, updated_book: Book):
+    for i, book in enumerate(books):
+        if book.id == book_id:
+            books[i] = updated_book
+            return {"message": "Book updated"}
+    return {"error": "Book not found"}
+```
+
+### f. DELETE
+```
+@app.delete("/books/{book_id}")
+def delete_book(book_id: int):
+    for book in books:
+        if book.id == book_id:
+            books.remove(book)
+            return {"message": "Book deleted"}
+    return {"error": "Book not found"}
+```
+
+
+# Database connections
+
+The ```database.py``` file sets up the following backend steps:
+```
+FastAPI endpoint => SQLAlchemy Session => SQL Query => PostGreSQL Database
+```
+
+Example: This automatically creates SQL tables:
+```
+class User(Base):
+    __tablename__ = "users"
+
+    id = Column(UUID, primary_key=True)
+    username = Column(String)
+    email = Column(String)
+```
