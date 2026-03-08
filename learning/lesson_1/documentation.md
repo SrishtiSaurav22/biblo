@@ -451,3 +451,4 @@ class User(Base):
     email = Column(String, unique=True, index=True)
 ```
 f. In case you don't see the server, refresh pgAdmin as it does not auto-refresh.
+<img src="assets/image_5.png" width="1200">
