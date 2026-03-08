@@ -452,3 +452,43 @@ class User(Base):
 ```
 f. In case you don't see the server, refresh pgAdmin as it does not auto-refresh.
 <img src="assets/image_5.png" width="1200">
+
+# CRUD Operations
+Now, we’ll make your API actually interact with the database and we’ll implement these endpoints:
+```
+POST    /users        → create user
+GET     /users        → list users
+GET     /users/{id}   → get one user
+DELETE  /users/{id}   → delete user
+```
+
+## 1. Create ```schemas.py``` file.
+This file defines the data format for API requests/responses. It's content is as follows:
+```
+from pydantic import BaseModel
+
+class UserCreate(BaseModel):
+    name: str
+    email: str
+
+class UserResponse(BaseModel):
+    id: int
+    name: str
+    email: str
+
+    class Config:
+        from_attributes = True
+```
+
+## 2. Update ```database.py```
+Add this dependency function, at the bottom, lets FastAPI open and close database sessions safely:
+```
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+```
+## 3. Update ```main.py```
+
