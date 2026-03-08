@@ -109,7 +109,7 @@ You should see:
 ```
 {"message": "Biblo backend is running"}
  ```
-<img src="assets/image_1.png" width="600">
+<img src="assets/image_1.png" width="900">
 
 You just built a backend server.
 
@@ -176,7 +176,7 @@ def signup(user: UserSignup):
 ```
 http://127.0.0.1:8000/docs
 ```
-<img src="assets/image_2.png" width="600"> 
+<img src="assets/image_2.png" width="1200"> 
 
 ## d. What Is Pydantic Doing Here?
 Pydantic:
@@ -255,8 +255,8 @@ def delete_book(book_id: int):
     return {"error": "Book not found"}
 ```
 
-<img src="assets/image_3.png" width="600">
-
+<img src="assets/image_3.png" width="1200">
+<img src="assets/image_4.png" width="1200">
 
 # Database connections
 
