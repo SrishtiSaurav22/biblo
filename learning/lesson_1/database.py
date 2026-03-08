@@ -26,3 +26,8 @@ SessionLocal = sessionmaker(
     bind=engine        # bind session to the database engine
 )
 
+from sqlalchemy.orm import declarative_base
+
+Base = declarative_base()
+
+
