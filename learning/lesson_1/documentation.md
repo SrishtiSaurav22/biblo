@@ -255,9 +255,22 @@ def delete_book(book_id: int):
     return {"error": "Book not found"}
 ```
 
+<img src="assets/image_3.png" width="600">
+
 
 # Database connections
 
+## a. Installing SQLAlchemy:
+```
+pip install sqlalchemy psycopg2-binary
+```
+
+## b. To verify if the installation went through correctly, you may run:
+```
+pip list
+```
+
+## c. Explanation
 The ```database.py``` file sets up the following backend steps:
 ```
 FastAPI endpoint => SQLAlchemy Session => SQL Query => PostGreSQL Database
