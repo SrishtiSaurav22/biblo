@@ -564,3 +564,30 @@ d. You can test everything from the browser.
 <img src="assets/image_8.png" width="1200">
 <img src="assets/image_9.png" width="1200">
 <img src="assets/image_10.png" width="1200">
+
+# Flow implemented so far in Lesson 1
+```
+Flutter App
+   |
+   |  HTTP POST /users
+   v
+FastAPI Endpoint (/users)
+   |
+   |  Validate input with Pydantic schema
+   v
+SQLAlchemy ORM
+   |
+   |  Create User object
+   |  Add to session
+   |  Commit to DB
+   v
+PostgreSQL Database
+   |
+   |  Stores the new user record
+   v
+FastAPI Response
+   |
+   |  JSON: { "message": "User created", "id": 1, ... }
+   v
+Flutter App receives confirmation
+```
