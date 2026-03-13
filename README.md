@@ -72,7 +72,7 @@ ended_at
   <tr>
     <td><img src="concept-notes/biblo-concept-notes_1.jpg.jpeg" width="600"/></td>
     <td><img src="concept-notes/biblo-concept-notes_2.jpg.jpeg" width="600"/></td>
-    <td><img src="concept-notes/biblo-concept-notes_3.jpg.jpeg" width="600"/></td>
+    <td><img src="concept-notes/biblo-concept-notes_3.jpeg" width="600"/></td>
   </tr>
 </table>
 
@@ -126,7 +126,7 @@ ended_at
     <td><img src="concept-art/biblo-concept-art_8.jpg.jpeg" width="600"/></td>
   </tr>
      <tr>
-    <td><img src="concept-art/biblo-concept-art_9.jpg.jpeg" width="600"/></td>
+    <td><img src="concept-art/biblo-concept-art_9.jpeg" width="600"/></td>
   </tr>
 </table>
 
