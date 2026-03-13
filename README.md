@@ -82,11 +82,11 @@ ended_at
 * Quiz game teaching the user about women in literature
 * Card game
   1. There are two players that play against each other: the user and Biblo
-  2. Both the players have a counter measuring their health in a number. The counter changes colours to depict the current health of the player. It's colours are:
-  
-     a. Green if the player's health is above a certain threshold, indicating that it is good.
-     b. Yellow if the player's health is within a certain range, indicating that it is low.
-     c. Red if the player's health is below a certain threshold, indicating that it's poor and the player could lose soon.
+  2. Both the players have a counter measuring their health in a number. The counter changes colours to depict the current health of the player. It's colours are: <br/>
+
+     a. Green if the player's health is above a certain threshold, indicating that it is good <br/>
+     b. Yellow if the player's health is within a certain range, indicating that it is low <br/>
+     c. Red if the player's health is below a certain threshold, indicating that it's poor and the player could lose soon <br/>
 
   3. The game or "battle" is timed with a timer on screen.
   4. The user has a stack of cards from which they'll select one. On the screen you'll see two boxes, one displaying the current card and the other displaying the stack with just "stack" displayed on top of it.
@@ -94,13 +94,13 @@ ended_at
   6. Biblo's card selection will be random.
   7. Both the user's and Biblo's card selection will be randomly decided. While the user can select the next card to play, Biblo will randomly select a card from its randomly selected collection.
   8. The cards are about popular mythical characters like vampires, werewolves, elves, dragons, pegasuses, goblins, etc. with different stats.
-  9. There are 3 group of cards: 
+  9. There are 3 group of cards: <br/>
   
-     a. "Common": Normal stats, not too high, not too low.
-     b. "Rare": Underpowered characters, low stats
-     c. "Legendary": Overpowered characters, high stats
+     a. "Common": Normal stats, not too high, not too low <br/>
+     b. "Rare": Underpowered characters, low stats <br/>
+     c. "Legendary": Overpowered characters, high stats <br/>
 
-    NOTE: All the characters stats are balanced.
+    NOTE: All the characters stats are balanced <br/>
  10. The stats of both the players get balanced out based on differences between their different stats.
  11. If a player has legendary cards, against the other player's non-legendary cards, then their health will increase by a small number (apart from the balancing out between their respective stats)
  12. If a player has  a rare card, against the other player's non-rare cards, their health will decrease by a small number (apart from the balancing out between their respective stats) 
