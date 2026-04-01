@@ -292,4 +292,5 @@ INFO:     127.0.0.1:56923 - "GET / HTTP/1.1" 200 OK
 ```
 And on the browser:
 <img src="assets/200_screenshot.png" width="900">
+<img src="assets/swagger_ui_ss.png" width="900">
 
