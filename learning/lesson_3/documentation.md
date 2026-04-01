@@ -21,8 +21,10 @@ app/
 ├── db/
 └── main.py
 ```
+
 ### c. Create hashing utility
 In app/auth/hashing.py, put in:
+
 ```
 # app/auth/hashing.py
 from passlib.context import CryptContext
@@ -38,13 +40,16 @@ def hash_password(password: str) -> str:
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     return pwd_context.verify(plain_password, hashed_password)
 ```
+
 ### d. Update the user model
 Add the following to ```models.py```:
+
 ```
 # auth update
     password_hash = Column(String, nullable=False)
 ```
 What the updated ```models.py``` file should look like:
+
 ```
 from sqlalchemy import Column, Integer, String
 from database import Base
@@ -62,8 +67,10 @@ class User(Base):
     # auth update
     password_hash = Column(String, nullable=False)
 ```
+
 ### e. Setup a signup route
 Add the following to ```routes.py```:
+
 ```
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
@@ -87,8 +94,10 @@ def signup(email: str, password: str, db: Session):
 
     return {"message": "User created"}
 ```
+
 ### f. Setup the login route
 Add the following to ```routes.py```:
+
 ```
 @router.post("/login")
 def login(email: str, password: str, db: Session):
@@ -102,12 +111,14 @@ def login(email: str, password: str, db: Session):
 
     return {"message": "Login success"}
 ```
+
 Here, notice this:
+
 ```
 if not user:
     return {"error": "Invalid credentials"}
 ```
-and
+and:
 ```
 if not verify_password(...):
     return {"error": "Invalid credentials"}
@@ -116,8 +127,9 @@ We use the same message for both, and this is a good security practice because i
 
 ### g. Testing
 If the current state of the project structure is as follows:
+<br>
 <img src="assets/project-structure-screenshot.png" width="900">
-
+<br>
 And the ```main.py``` file looks like this:
 ```
 from fastapi import FastAPI, Depends, HTTPException
@@ -189,14 +201,16 @@ INFO:     127.0.0.1:50177 - "GET / HTTP/1.1" 404 Not Found
 INFO:     127.0.0.1:50177 - "GET / HTTP/1.1" 404 Not Found
 ```
 And on the browser:
+<br>
 <img src="assets/404_screenshot.png" width="900">
-This is because:
-i. Your FastAPI server is running perfectly.
-ii. You visited http://127.0.0.1:8000/
-iii. But you haven’t created a route for / yet
-iv. So FastAPI is saying: “I’m running, but no endpoint exists at the homepage.”
-v. Right now, your app does not have the route: ```@app.get("/")```
-vi. So, the root page returns 404.
+<br>
+This is because:<br>
+i. Your FastAPI server is running perfectly. <br>
+ii. You visited http://127.0.0.1:8000/ <br>
+iii. But you haven’t created a route for / yet <br>
+iv. So FastAPI is saying: “I’m running, but no endpoint exists at the homepage.” <br>
+v. Right now, your app does not have the route: ```@app.get("/")``` <br>
+vi. So, the root page returns 404. <br>
 vii. To fix this, add the following to your ```main.py``` file:
 ```
 from fastapi import FastAPI
