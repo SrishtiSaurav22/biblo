@@ -116,7 +116,7 @@ We use the same message for both, and this is a good security practice because i
 
 ### g. Testing
 If the current state of the project structure is as follows:
-<img src="assets/" width="900">
+<img src="assets/project-structure-screenshot.png" width="900">
 
 And the ```main.py``` file looks like this:
 ```
@@ -189,7 +189,7 @@ INFO:     127.0.0.1:50177 - "GET / HTTP/1.1" 404 Not Found
 INFO:     127.0.0.1:50177 - "GET / HTTP/1.1" 404 Not Found
 ```
 And on the browser:
-<img src="assets/" width="900">
+<img src="assets/404_screenshot.png" width="900">
 This is because:
 i. Your FastAPI server is running perfectly.
 ii. You visited http://127.0.0.1:8000/
@@ -277,5 +277,5 @@ INFO:     Application startup complete.
 INFO:     127.0.0.1:56923 - "GET / HTTP/1.1" 200 OK
 ```
 And on the browser:
-<img src="assets/" width="900">
+<img src="assets/200_screenshot.png" width="900">
 
