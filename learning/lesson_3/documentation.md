@@ -230,8 +230,12 @@ import models
 import schemas
 from database import engine, get_db
 from models import Base, User
+from auth.routes import router as auth_router
 
 app = FastAPI()
+app.include_router(auth_router)
+# This tells FastAPI:
+# “Take all routes from auth/routes.py and add them to the app.”
 
 Base.metadata.create_all(bind=engine)
 
