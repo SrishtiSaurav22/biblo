@@ -1,5 +1,5 @@
-# Biblo MVP UI plan
-## 1. Pages to build (NOT in order of priority):
+# Biblo MVP plan
+## 1. UI pages to build (NOT in order of priority):
 a. Start <br>
 b. Login <br>
 c. Signup <br>
