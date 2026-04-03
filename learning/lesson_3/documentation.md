@@ -1,4 +1,4 @@
-# Password hashing (using bcrypt)
+# 1. Password hashing (using bcrypt)
 
 ## 1. Setup
 
@@ -298,3 +298,175 @@ And on the browser:
 <img src="assets/200_screenshot.png" width="900">
 <img src="assets/swagger_ui_ss.png" width="900">
 
+# 2. JWT Tokens
+
+## 1. Installation and setup
+### 1. Inside the virtual environment, run the following command:
+```
+pip install python-jose[cryptography]
+```
+### 2. Now, create a new file named ```auth/token.py``` as a token utility, and put the following code inside it:
+```
+# auth/token.py
+# This is a token generator
+
+from datetime import datetime, timedelta, timezone
+from jose import jwt
+
+SECRET_KEY = "my-fastapi-jwt-secret-key-for-testing-12345"
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 30
+
+
+def create_access_token(data: dict):
+    to_encode = data.copy()
+
+    expire = datetime.now(timezone.utc) + timedelta(
+        minutes=ACCESS_TOKEN_EXPIRE_MINUTES
+    )
+
+    to_encode.update({"exp": expire})
+
+    return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+```
+Here, the line ```jwt.encode(...)``` creates the token. The token stores:
+* user email
+* expiry time
+* cryptographic signature
+
+<strong>NOTE:</strong> The signature prevents tampering.
+
+<strong>Example usage:</strong> <br>
+This:
+```token = create_access_token({"sub": user.email})```
+creates a signed token where:
+```
+{
+  "sub": "srishti@email.com",
+  "exp": "30 minutes later"
+}
+```
+### 3. Update the login route
+Now update ```auth/routes.py``` as follows:
+```
+from auth.token import create_access_token
+```
+
+And replace the initial login route:
+```
+@router.post("/login")
+def login(email: str, password: str, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.email == email).first()
+
+    if not user:
+        return {"error": "Invalid credentials"}
+
+    if not verify_password(password, user.password_hash):
+        return {"error": "Invalid credentials"}
+
+    return {"message": "Login success"}
+```
+with the new one:
+```
+@router.post("/login")
+def login(email: str, password: str, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.email == email).first()
+
+    if not user:
+        return {"error": "Invalid credentials"}
+
+    if not verify_password(password, user.password_hash):
+        return {"error": "Invalid credentials"}
+
+    token = create_access_token({"sub": user.email})
+
+    return {
+        "access_token": token,
+        "token_type": "bearer"
+    }
+```
+Your ``` auth/routes.py``` file should now look like this:
+```
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
+from auth.hashing import hash_password
+from models import User
+from auth.hashing import verify_password
+from database import get_db
+from auth.token import create_access_token
+
+router = APIRouter()
+
+@router.post("/signup")
+def signup(email: str, password: str, db: Session = Depends(get_db)):
+    hashed = hash_password(password)
+
+    new_user = User(
+        email=email,
+        password_hash=hashed
+    )
+
+    db.add(new_user)
+    db.commit()
+
+    return {"message": "User created"}
+
+#@router.post("/login")
+#def login(email: str, password: str, db: Session = Depends(get_db)):
+#    user = db.query(User).filter(User.email == email).first()
+#
+#    if not user:
+#        return {"error": "Invalid credentials"}
+#
+#    if not verify_password(password, user.password_hash):
+#        return {"error": "Invalid credentials"}
+#
+#    return {"message": "Login success"}
+
+@router.post("/login")
+def login(email: str, password: str, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.email == email).first()
+
+    if not user:
+        return {"error": "Invalid credentials"}
+
+    if not verify_password(password, user.password_hash):
+        return {"error": "Invalid credentials"}
+
+    token = create_access_token({"sub": user.email})
+
+    return {
+        "access_token": token,
+        "token_type": "bearer"
+    }
+```
+<strong>Expected output:</strong> <br>
+<img src="assets/swagger_ui_ss_jwt.png" width="900">
+
+<strong>Significance:</strong> <br>
+Now, this token lets your frontend call:
+```
+GET /recommendations
+Authorization: Bearer <token>
+```
+without logging in every time.
+<strong>NOTE:</strong> <br>
+* <strong> Security concept about SECRET_KEY:</strong> <br>
+This line (from ```auth/token.py```):
+```
+SECRET_KEY = "my-fastapi-jwt-secret-key-for-testing-12345"
+```
+signs the token, so if someone changes the payload manually:
+```
+{
+  "sub": "admin@email.com"
+}
+```
+the signature becomes invalid, so the backend rejects it. That's the JWT security.
+* <strong>Production best practice:</strong> <br>
+Later, NEVER hardcode this. Instead, use environment variables:
+```
+import os
+SECRET_KEY = os.getenv("SECRET_KEY")
+```
+But for learning this is fine.
