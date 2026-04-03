@@ -470,3 +470,113 @@ import os
 SECRET_KEY = os.getenv("SECRET_KEY")
 ```
 But for learning this is fine.
+
+# 3. Protecting routes
+
+## 1. Add token verification
+In ```auth/token.py```, add the following piece of code:
+```
+from jose import jwt, JWTError
+
+def verify_access_token(token: str):
+    try:
+        payload = jwt.decode(
+            token,
+            SECRET_KEY,
+            algorithms=[ALGORITHM]
+        )
+
+        email = payload.get("sub")
+
+        if email is None:
+            return None
+
+        return email
+
+    except JWTError:
+        return None
+```
+Here, this line ```jwt.decode(...)```: <br>
+&emsp; a. Checks: <br>
+
+&emsp; &emsp; i. signature valid <br>
+&emsp; &emsp; ii. secret key correct <br>
+&emsp; &emsp; iii. token not expired <br> 
+
+&emsp; b. Then extracts ```payload["sub"]``` which is the logged-in email. <br>
+
+## 2. Create auth dependency
+Create ```auth/dependencies.py``` and put in the following code:
+```
+from fastapi import Depends, HTTPException
+from fastapi.security import OAuth2PasswordBearer
+from auth.token import verify_access_token
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
+
+
+def get_current_user(token: str = Depends(oauth2_scheme)):
+    email = verify_access_token(token)
+
+    if email is None:
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid or expired token"
+        )
+
+    return email
+```
+## 3. Create a protected route
+In ```main.py```, add the following piece of code:
+```
+from auth.dependencies import get_current_user
+```
+And then add:
+```
+@app.get("/recommendations")
+def get_recommendations(current_user: str = Depends(get_current_user)):
+    return {
+        "message": f"Hello {current_user}, here are your recommendations"
+    }
+```
+## 4. Testing
+To test the setup created so far:
+a. In Swagger ```/docs```, click on "Authorize", and enter the username and password.
+
+b. You may possibly observe the following error on the VS Code terminal:
+```
+(venv) PS X:\xxxx\xxxx\xxxx\xxxxx\project-related-learning> uvicorn main:app --reload INFO: Will watch for changes in these directories: ['X:\\xxxx\\xxxx\\xxxx\\xxxx\\project-related-learning'] INFO: Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit) INFO: Started reloader process [28532] using StatReload INFO: Started server process [25384] INFO: Waiting for application startup. INFO: Application startup complete. INFO: 127.0.0.1:50709 - "GET / HTTP/1.1" 200 OK INFO: 127.0.0.1:50709 - "GET /favicon.ico HTTP/1.1" 404 Not Found INFO: 127.0.0.1:50709 - "GET /docs HTTP/1.1" 200 OK INFO: 127.0.0.1:50709 - "GET /openapi.json HTTP/1.1" 200 OK INFO: 127.0.0.1:57347 - "POST /login HTTP/1.1" 422 Unprocessable Content INFO: 127.0.0.1:60935 - "POST /login HTTP/1.1" 422 Unprocessable Content INFO: 127.0.0.1:60935 - "POST /login HTTP/1.1" 422 Unprocessable Content WARNING: StatReload detected changes in 'auth\routes.py'. Reloading... INFO: Shutting down INFO: Waiting for application shutdown. INFO: Application shutdown complete. INFO: Finished server process [25384] Form data requires "python-multipart" to be installed. You can install "python-multipart" with: pip install python-multipart Process SpawnProcess-2: Traceback (most recent call last): File "C:\xxxx\xxxx\xxxx\xxxx\xxxx\Python\Python314\Lib\multiprocessing\process.py", line 320, in _bootstrap self.run() ~~~~~~~~^^ File "X:\xxxx\xxxx\xxxx\xxxx\xxxx\Python\Python314\Lib\multiprocessing\process.py", line 108, in run self._target(*self._args, **self._kwargs) ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ File "X:\xxxx\xxxx\xxxx\xxxx\project-related-learning\venv\Lib\site-packages\uvicorn\_subprocess.py", line 80, in subprocess_started target(sockets=sockets) ~~~~~~^^^^^^^^^^^^^^^^^ File "X:\xxxx\xxxx\xxxx\xxxx\project-related-learning\venv\Lib\site-packages\uvicorn\server.py", line 75, in run return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory()) File "X:\xxxx\xxxx\xxxx\xxxx\xxxx\Python\Python314\Lib\asyncio\runners.py", line 204, in run return runner.run(main) ~~~~~~~~~~^^^^^^ File "X:\xxxx\xxxx\xxxx\xxxx\xxxx\Python\Python314\Lib\asyncio\runners.py", line 127, in run return self._loop.run_until_complete(task) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^ File "X:\xxxx\xxxx\xxxx\xxxx\xxxx\Python\Python314\Lib\asyncio\base_events.py", line 719, in run_until_complete return future.result() ~~~~~~~~~~~~~^^ File "X:\xxxx\xxxx\xxxx\xxxx\project-related-learning\venv\Lib\site-packages\uvicorn\server.py", line 79, in serve await self._serve(sockets) File "X:\xxxx\xxxx\xxxx\xxxx\project-related-learning\venv\Lib\site-packages\uvicorn\server.py", line 86, in _serve config.load() ~~~~~~~~~~~^^ File "X:\xxxx\xxxx\xxxx\xxxx\project-related-learning\venv\Lib\site-packages\uvicorn\config.py", line 441, in load self.loaded_app = import_from_string(self.app) ~~~~~~~~~~~~~~~~~~^^^^^^^^^^ File "X:\xxxx\xxxx\xxxx\xxxx\project-related-learning\venv\Lib\site-packages\uvicorn\importer.py", line 19, in import_from_string module = importlib.import_module(module_str) File "X:\xxxx\xxxx\xxxx\xxxx\xxxx\Python\Python314\Lib\importlib\__init__.py", line 88, in import_module return _bootstrap._gcd_import(name[level:], package, level) ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ File "<frozen importlib._bootstrap>", line 1398, in _gcd_import File "<frozen importlib._bootstrap>", line 1371, in _find_and_load File "<frozen importlib._bootstrap>", line 1342, in _find_and_load_unlocked File "<frozen importlib._bootstrap>", line 938, in _load_unlocked File "<frozen importlib._bootstrap_external>", line 759, in exec_module File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed File "X:\xxxx\xxxx\xxxx\xxxx\project-related-learning\main.py", line 8, in <module> from auth.routes import router as auth_router File "X:\xxxx\xxxx\xxxx\xxxx\project-related-learning\auth\routes.py", line 56, in <module> @router.post("/login") ~~~~~~~~~~~^^^^^^^^^^ File "X:\xxxx\xxxx\xxxx\xxxx\project-related-learning\venv\Lib\site-packages\fastapi\routing.py", line 1446, in decorator self.add_api_route( ~~~~~~~~~~~~~~~~~~^ path, ^^^^^ ...<23 lines>... generate_unique_id_function=generate_unique_id_function, ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ ) ^ File "X:\xxxx\xxxx\xxxx\xxxx\project-related-learning\venv\Lib\site-packages\fastapi\routing.py", line 1382, in add_api_route route = route_class( self.prefix + path, ...<27 lines>... ), ) File "X:\xxxx\xxxx\xxxx\xxxx\project-related-learning\venv\Lib\site-packages\fastapi\routing.py", line 945, in __init__ self.dependant = get_dependant( ~~~~~~~~~~~~~^ path=self.path_format, call=self.endpoint, scope="function" ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ ) ^ File "X:\xxxx\xxxx\xxxx\xxxx\project-related-learning\venv\Lib\site-packages\fastapi\dependencies\utils.py", line 331, in get_dependant sub_dependant = get_dependant( path=path, ...<5 lines>... scope=param_details.depends.scope, ) File "X:\xxxx\xxxx\xxxx\xxxx\project-related-learning\venv\Lib\site-packages\fastapi\dependencies\utils.py", line 309, in get_dependant param_details = analyze_param( param_name=param_name, ...<2 lines>... is_path_param=is_path_param, ) File "X:\xxxx\xxxx\xxxx\xxxx\project-related-learning\venv\Lib\site-packages\fastapi\dependencies\utils.py", line 532, in analyze_param ensure_multipart_is_installed() ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^ File "X:\xxxx\xxxx\xxxx\xxxx\project-related-learning\venv\Lib\site-packages\fastapi\dependencies\utils.py", line 118, in ensure_multipart_is_installed raise RuntimeError(multipart_not_installed_error) from None RuntimeError: Form data requires "python-multipart" to be installed. You can install "python-multipart" with: pip install python-multipart
+```
+
+To resolve this, install the mentioned dependency:
+```
+pip install python-multipart
+```
+This is because ```OAuth2PasswordRequestForm = Depends()``` expects data in HTML form format, not JSON. FastAPI uses python-multipart to parse that form data. Earlier your login route accepted:
+```
+email: str
+password: str
+```
+Those were query params, so no extra parser needed. Now, we upgraded to ```OAuth2PasswordRequestForm``` which uses ```application/x-www-form-urlencoded```, OAuth2 standard login format. So, FastAPI needs a form-data parser package.
+
+<strong>NOTE:</strong> <br>
+
+JSON body:
+```
+{
+  "email": "...",
+  "password": "..."
+}
+```
+VS <br><br>
+
+Form data:
+```
+username=srishti@email.com
+password=srishti123
+```
+OAuth2 specifically expects the second one.
+
+Expected output on Swagger UI:
+<img src="assets/swagger_ui_ss_jwt_login.png" width="900">
+<img src="assets/swagger_ui_ss_jwt_login_response.png" width="900">
