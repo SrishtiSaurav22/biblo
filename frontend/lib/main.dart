@@ -4,6 +4,7 @@ import 'login.dart';
 import 'signup.dart';
 import 'home.dart';
 import 'games.dart';
+import 'admin.dart';
 
 void main() {
   runApp(const Biblo());
@@ -21,7 +22,8 @@ class Biblo extends StatelessWidget {
           '/login': (context) => const LoginScreen(),
           '/signup': (context) => const SignupScreen(),
           '/home': (context) => const HomeScreen(),
-          '/games': (context) => const GamesScreen()
+          '/games': (context) => const GamesScreen(),
+          '/admin': (context) => const AdminScreen()
           /*
           1. You added 'const' to the screen constructors inside routes (e.g. StartScreen())
           2. If your screen constructors support const, it's a good habit to add it
@@ -29,7 +31,7 @@ class Biblo extends StatelessWidget {
              "this widget never changes, don't rebuild it unnecessarily."
            */
         },
-      initialRoute: '/start',
+      initialRoute: '/admin',
       // home: const StartScreen(),
       /*
       1. You cannot have both 'home:' and 'routes:' since home and a named route for / can conflict.
