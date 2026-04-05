@@ -1,4 +1,48 @@
+import 'theme.dart';
 import 'package:flutter/material.dart';
+
+class AdminScreenButton extends StatelessWidget {
+
+  // final = value is assigned once, never reassigned
+  final String route;
+  final String title;
+
+  /*
+  When all properties of a widget are final, the widget's value
+  is completely fixed at creation time and will never change.
+  Dart can then create it at compile time instead of runtime —
+  meaning it's built before the app even runs.
+
+  The const keyword on the constructor is how you tell Dart:
+  "all the values in this widget are fixed, you can build
+  this ahead of time."
+   */
+  const AdminScreenButton({
+    super.key,
+    required this.route,
+    required this.title
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return  ElevatedButton(
+        onPressed: () {
+          Navigator.pushNamed(context, route);
+        },
+        style: ButtonStyle(
+            backgroundColor: WidgetStatePropertyAll(secondaryColor)
+        ),
+        child: Text(
+          title,
+          style: TextStyle(
+              color: buttonTextColor,
+              fontWeight: FontWeight.bold,
+              fontSize: 15
+          ),
+        )
+    );
+  }
+}
 
 class AdminScreen extends StatelessWidget {
   const AdminScreen({super.key});
@@ -6,7 +50,7 @@ class AdminScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.indigo,
+        backgroundColor: primaryColor,
         body: Center(
             child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -16,102 +60,26 @@ class AdminScreen extends StatelessWidget {
                   Text(
                     'Biblo Admin Screen',
                     style: TextStyle(
-                        color: Colors.white,
+                        color: textColor,
                         fontWeight: FontWeight.bold,
                         fontSize: 30
                     ),
                   ),
 
+                  // START BUTTON
+                  const AdminScreenButton(route: '/start', title: 'START'),
+
                   // LOGIN BUTTON
-                  ElevatedButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/login');
-                      },
-                      style: ButtonStyle(
-                          backgroundColor: WidgetStatePropertyAll(Colors.deepOrange.shade900)
-                      ),
-                      child: Text(
-                        'LOGIN',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.normal,
-                            fontSize: 15
-                        ),
-                      )
-                  ),
+                  const AdminScreenButton(route: '/login', title: 'LOGIN'),
 
                   // SIGNUP BUTTON
-                  ElevatedButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/signup');
-                      },
-                      style: ButtonStyle(
-                          backgroundColor: WidgetStatePropertyAll(Colors.deepOrange.shade900)
-                      ),
-                      child: Text(
-                        'SIGNUP',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.normal,
-                            fontSize: 15
-                        ),
-                      )
-                  ),
+                  const AdminScreenButton(route: '/signup', title: 'SIGNUP'),
 
                   // HOME BUTTON
-                  // SIGNUP BUTTON
-                  ElevatedButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/home');
-                      },
-                      style: ButtonStyle(
-                          backgroundColor: WidgetStatePropertyAll(Colors.deepOrange.shade900)
-                      ),
-                      child: Text(
-                        'HOME',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.normal,
-                            fontSize: 15
-                        ),
-                      )
-                  ),
+                  const AdminScreenButton(route: '/home', title: 'HOME'),
 
                   // GAMES BUTTON
-                  ElevatedButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/games');
-                      },
-                      style: ButtonStyle(
-                          backgroundColor: WidgetStatePropertyAll(Colors.deepOrange.shade900)
-                      ),
-                      child: Text(
-                        'GAMES',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.normal,
-                            fontSize: 15
-                        ),
-                      )
-                  ),
-
-                  // SIGNUP BUTTON
-                  ElevatedButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/games');
-                      },
-                      style: ButtonStyle(
-                          backgroundColor: WidgetStatePropertyAll(Colors.deepOrange.shade900)
-                      ),
-                      child: Text(
-                        'GAMES',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.normal,
-                            fontSize: 15
-                        ),
-                      )
-                  )
+                  const AdminScreenButton(route: '/games', title: 'GAMES')
                 ]
             )
         )
